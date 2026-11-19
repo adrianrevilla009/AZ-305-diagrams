@@ -1,0 +1,674 @@
+[
+ [
+  "01-identity-access.drawio",
+  "1.1",
+  "Hybrid authentication and sync: which one?",
+  "D",
+  "How on-prem AD users sign in to Entra ID (PHS, PTA, AD FS) and which agent synchronises them (Connect Sync or Cloud Sync). Defaults: PHS for sign-in, Connect Sync as the general tool."
+ ],
+ [
+  "01-identity-access.drawio",
+  "1.2",
+  "Hybrid identity architecture",
+  "A",
+  "On-prem AD syncs to Entra ID. Conditional Access decides access from signals (user, group, app, device, location, risk); Identity Protection supplies the risk. The tenant is the identity boundary."
+ ],
+ [
+  "01-identity-access.drawio",
+  "1.3",
+  "External identities: partners and customers",
+  "A",
+  "Partners come in as guests (B2B) with their own identity. B2B direct connect avoids a guest object (Teams shared channels). Consumers use a separate external tenant (External ID) with social login and your branding."
+ ],
+ [
+  "01-identity-access.drawio",
+  "1.4",
+  "Secretless access: managed identity, service principal, federation",
+  "A",
+  "Managed identities have no secrets for Azure resources. System-assigned lives and dies with one resource; user-assigned is its own reusable resource. Workload identity federation gives GitHub Actions, Kubernetes or other clouds access without secrets."
+ ],
+ [
+  "01-identity-access.drawio",
+  "1.5",
+  "Legacy and private apps",
+  "A",
+  "Three services bring on-prem and legacy workloads to Entra without VPN or domain controllers."
+ ],
+ [
+  "01-identity-access.drawio",
+  "1.6",
+  "Azure RBAC: scope, inheritance and roles",
+  "A",
+  "An assignment is principal + role + scope. Scopes inherit downward and permissions add up. Entra roles (Global Admin) are a different plane and are not inherited from Azure RBAC."
+ ],
+ [
+  "02-governance.drawio",
+  "2.1",
+  "Landing zone and management group hierarchy",
+  "A",
+  "Tenant root group > management groups > subscriptions > resource groups > resources. Policy and RBAC inherit downward. The reference landing zone separates Platform, Landing zones, Sandbox and Decommissioned."
+ ],
+ [
+  "02-governance.drawio",
+  "2.2",
+  "Azure Policy: effects and evaluation order",
+  "D",
+  "Policy controls what can exist and how it must be configured. RBAC controls who can do what. Start in Audit (or DoNotEnforce) before moving to Deny."
+ ],
+ [
+  "02-governance.drawio",
+  "2.3",
+  "Entra ID Governance",
+  "A",
+  "Governance of identity lifecycle and access. AWS has no native IGA product; the closest is IAM Identity Center + Access Analyzer. Licensing: PIM, access reviews and basic entitlement management came with P2; advanced features need Entra ID Governance \u26a0 verify the current split."
+ ],
+ [
+  "02-governance.drawio",
+  "2.4",
+  "Multi-tenant and hybrid management: Lighthouse and Arc",
+  "A",
+  "Lighthouse gives a service provider delegated access to customer tenants without guest accounts. Arc projects servers, Kubernetes and SQL from on-prem or other clouds into Azure so Policy, RBAC, Defender and Monitor apply to them."
+ ],
+ [
+  "02-governance.drawio",
+  "2.5",
+  "Boundaries: what isolates what",
+  "C",
+  "Each level of the hierarchy exists for a reason. Use this table to choose the right boundary."
+ ],
+ [
+  "03-encryption-keys.drawio",
+  "3.1",
+  "Key Vault design",
+  "A",
+  "One vault for keys, secrets and certificates. Authorise with Azure RBAC (not access policies), keep soft delete and purge protection on, reach it through a Private Endpoint and use managed identities instead of secrets."
+ ],
+ [
+  "03-encryption-keys.drawio",
+  "3.2",
+  "Which key store? Key Vault, Managed HSM, Cloud HSM...",
+  "D",
+  "From software-protected keys to dedicated hardware. Choose by tenancy, certification level, API needs (PKCS#11) and whether you need sovereignty or payment-specific HSMs."
+ ],
+ [
+  "03-encryption-keys.drawio",
+  "3.3",
+  "Encryption map: at rest, in transit, in use",
+  "C",
+  "Default encryption needs nothing from you. Add customer-managed keys when you need control or revocation, Always Encrypted when even the DBA must not see data, confidential computing for data in use."
+ ],
+ [
+  "04-networking.drawio",
+  "4.1",
+  "Hub-and-spoke network",
+  "A",
+  "A hub VNet holds shared services (gateways, firewall, DNS, Bastion). Each workload lives in its own spoke VNet peered to the hub. You run the routing yourself because peering is not transitive."
+ ],
+ [
+  "04-networking.drawio",
+  "4.2",
+  "Virtual WAN",
+  "A",
+  "Virtual WAN is a Microsoft-managed hub with automatic transitive routing between VNets, VPN and ExpressRoute. It scales to multi-hub global networks and is the answer for many branches or many regions."
+ ],
+ [
+  "04-networking.drawio",
+  "4.3",
+  "Hub-spoke vs Virtual WAN",
+  "D",
+  "Both build a hub network. Pick by size and by how much control you want over routing."
+ ],
+ [
+  "04-networking.drawio",
+  "4.4",
+  "Hybrid connectivity: VPN and ExpressRoute",
+  "A",
+  "Site-to-site VPN rides the Internet (cheap, quick, also the backup). ExpressRoute is a private circuit with predictable latency and an SLA. Combine them for resilience."
+ ],
+ [
+  "04-networking.drawio",
+  "4.5",
+  "Private access to PaaS: Private Endpoint vs Service Endpoint",
+  "A",
+  "A Private Endpoint gives a PaaS resource a private IP inside your VNet (works from on-prem too). A Service Endpoint only optimises the route; the service keeps its public IP."
+ ],
+ [
+  "04-networking.drawio",
+  "4.6",
+  "Network security stack",
+  "A",
+  "Defence in depth on the network: DDoS and WAF at the edge, a central firewall for inspection, NSGs on every subnet, Bastion for admin access, NAT Gateway for fixed outbound IPs."
+ ],
+ [
+  "04-networking.drawio",
+  "4.7",
+  "Hybrid DNS and name resolution",
+  "A",
+  "Public names live in Azure DNS. Private names live in Private DNS zones linked to VNets. DNS Private Resolver forwards queries between on-prem and Azure so you don't run DNS VMs."
+ ],
+ [
+  "04-networking.drawio",
+  "4.8",
+  "Azure Virtual Network Manager and Route Server (added)",
+  "A",
+  "Two services that are not in your study document but fit this topic. Virtual Network Manager applies connectivity and security rules to many VNets at once; Route Server lets an NVA exchange routes with Azure over BGP."
+ ],
+ [
+  "05-lb-cdn-apis.drawio",
+  "5.1",
+  "Load-balancing decision map",
+  "D",
+  "Two axes decide the service: global or regional, and HTTP(S) or not. Traffic Manager is DNS-only; Front Door and Application Gateway understand HTTP; Load Balancer is plain TCP/UDP."
+ ],
+ [
+  "05-lb-cdn-apis.drawio",
+  "5.2",
+  "Layered web front end",
+  "A",
+  "Global edge first, regional services behind it. Front Door terminates the user connection near them and applies WAF; Application Gateway routes inside the region; Load Balancer spreads TCP to the VMs."
+ ],
+ [
+  "05-lb-cdn-apis.drawio",
+  "5.3",
+  "API Management: tiers and placement",
+  "A",
+  "APIM publishes, secures and monitors APIs (OAuth/JWT, rate limits, quotas, caching, transformations, versioning, developer portal). Application Gateway handles web traffic and WAF; use both together."
+ ],
+ [
+  "06-storage.drawio",
+  "6.1",
+  "Redundancy ladder: LRS to RA-GZRS",
+  "D",
+  "Redundancy is chosen per storage account. From least to most resilient: LRS < ZRS < GRS < GZRS < RA-GZRS. Replication to the secondary region is asynchronous (RPO > 0) and the secondary is writable only after a failover."
+ ],
+ [
+  "06-storage.drawio",
+  "6.2",
+  "Blob tiers, lifecycle and data protection",
+  "A",
+  "Pick the access tier by how often you read the data; lifecycle rules move data automatically. Protect against deletion and tampering with soft delete, versioning, point-in-time restore and WORM."
+ ],
+ [
+  "06-storage.drawio",
+  "6.3",
+  "Securing access to a storage account",
+  "A",
+  "Layer identity, network and encryption. Prefer Entra ID (RBAC and user-delegation SAS) over account keys, close the public endpoint, and require secure transfer."
+ ],
+ [
+  "06-storage.drawio",
+  "6.4",
+  "File and block services: which one?",
+  "D",
+  "Match the protocol and performance profile: managed SMB/NFS shares, hybrid caching on a Windows Server, enterprise NAS, SAN, or VM disks."
+ ],
+ [
+  "06-storage.drawio",
+  "6.5",
+  "Managed disks: performance ladder",
+  "D",
+  "IOPS and throughput grow up the ladder. Premium SSD v2 lets you set IOPS and throughput separately from capacity; Ultra is for sub-millisecond workloads."
+ ],
+ [
+  "06-storage.drawio",
+  "6.6",
+  "Data Lake Storage Gen2 and the other storage services",
+  "A",
+  "ADLS Gen2 is a storage account with the hierarchical namespace turned on, giving POSIX ACLs for Spark, Synapse, Fabric and Databricks. The same account type also hosts Blob, Files, Queue and Table."
+ ],
+ [
+  "07-compute.drawio",
+  "7.1",
+  "Compute decision map",
+  "D",
+  "Pick by how much you want to manage: full OS control (VM), managed web apps (App Service), serverless containers (Container Apps), full Kubernetes (AKS), one-off container (ACI), event code (Functions), batch jobs (Batch)."
+ ],
+ [
+  "07-compute.drawio",
+  "7.2",
+  "Highly available VMs",
+  "A",
+  "VM SLA depends on placement: single instance with Premium SSD/Ultra 99.9%, Availability Set 99.95%, Availability Zones 99.99%. Scale Sets spread instances across zones behind a zone-redundant Load Balancer."
+ ],
+ [
+  "07-compute.drawio",
+  "7.3",
+  "App Service: plans, slots and networking",
+  "A",
+  "An App Service Plan is the compute; several apps can share it. Deployment slots give blue/green releases with a swap. VNet Integration is outbound, Private Endpoint is inbound."
+ ],
+ [
+  "07-compute.drawio",
+  "7.4",
+  "Functions hosting plans",
+  "D",
+  "Same programming model, four hosting plans. Flex Consumption is the recommended serverless choice for new work; Premium removes cold starts; Dedicated reuses a plan you already pay for."
+ ],
+ [
+  "07-compute.drawio",
+  "7.5",
+  "AKS reference architecture",
+  "A",
+  "Node pools spread across zones, secrets via Workload Identity and Key Vault, images from ACR over Private Link, telemetry to Log Analytics. Scale with HPA, cluster autoscaler and KEDA; use virtual nodes (ACI) for bursts."
+ ],
+ [
+  "07-compute.drawio",
+  "7.6",
+  "Container Apps: serverless containers",
+  "A",
+  "Container Apps runs containers without exposing Kubernetes. KEDA scales on HTTP or events (down to zero), revisions allow canary traffic splitting, Dapr gives service-to-service building blocks."
+ ],
+ [
+  "07-compute.drawio",
+  "7.7",
+  "Batch, HPC and specialised compute",
+  "A",
+  "Azure Batch runs parallel work on pools of VMs (Spot to save money). The service itself has no extra cost. CycleCloud covers classic HPC clusters; Service Fabric and ARO are niche."
+ ],
+ [
+  "07-compute.drawio",
+  "7.8",
+  "Azure Virtual Desktop",
+  "A",
+  "Multi-session Windows desktops on host pools. User profiles roam with FSLogix on Azure Files or NetApp Files; Entra ID and Conditional Access control sign-in; autoscale starts and stops hosts."
+ ],
+ [
+  "08-databases.drawio",
+  "8.1",
+  "Azure SQL options: which one?",
+  "D",
+  "Choose by compatibility versus management effort: SQL Database (PaaS, single or pool), Managed Instance (near-100% SQL Server compatibility), SQL Server on a VM (full OS control)."
+ ],
+ [
+  "08-databases.drawio",
+  "8.2",
+  "SQL Database purchase and service tiers",
+  "D",
+  "Two purchasing models (vCore and DTU) and three main tiers; Hyperscale scales storage up to 100 TB, Serverless pauses when idle."
+ ],
+ [
+  "08-databases.drawio",
+  "8.3",
+  "SQL HA and DR",
+  "A",
+  "Zone redundancy gives HA within a region; active geo-replication or failover groups give DR across regions with a readable secondary."
+ ],
+ [
+  "08-databases.drawio",
+  "8.4",
+  "Cosmos DB: global distribution",
+  "A",
+  "Multi-region writes give active-active with low latency worldwide; conflict resolution defaults to last-writer-wins. Choose the API by the existing data model."
+ ],
+ [
+  "08-databases.drawio",
+  "8.5",
+  "Cosmos DB consistency ladder",
+  "D",
+  "Five levels trade consistency for latency and availability. Session is the default and fits most apps."
+ ],
+ [
+  "08-databases.drawio",
+  "8.6",
+  "PostgreSQL and MySQL Flexible Server",
+  "A",
+  "Flexible Server runs the community engines with zone-redundant HA, read replicas and stop/start. Use Private access (VNet injection) or Private Endpoint."
+ ],
+ [
+  "08-databases.drawio",
+  "8.7",
+  "Azure Managed Redis",
+  "A",
+  "In-memory cache for session state, leaderboards and hot data; also a vector store. Cache-aside is the common pattern."
+ ],
+ [
+  "09-messaging-integration.drawio",
+  "9.1",
+  "Message vs event: which service?",
+  "D",
+  "A message is something the sender expects someone to process (an order, a payment): Service Bus or Storage Queue. An event is a notification that something happened: Event Grid for discrete events, Event Hubs for continuous streams of telemetry."
+ ],
+ [
+  "09-messaging-integration.drawio",
+  "9.2",
+  "Service Bus: queues, topics and tiers",
+  "A",
+  "Enterprise broker. Topics fan out to subscriptions with filters (like SNS filter policies to SQS). Sessions give FIFO per key; failed messages move to the dead-letter queue after the max delivery count (10 by default)."
+ ],
+ [
+  "09-messaging-integration.drawio",
+  "9.3",
+  "Event Hubs: partitions, consumer groups, Capture",
+  "A",
+  "A partitioned log for millions of events per second. Order is guaranteed inside a partition; parallelism is capped by the partition count. Consumer groups read independently and can replay within the retention."
+ ],
+ [
+  "09-messaging-integration.drawio",
+  "9.4",
+  "Event-driven and telemetry pipelines",
+  "A",
+  "Two classic patterns. Discrete events: a blob creation triggers a function that queues work. Continuous telemetry: Event Hubs feeds Stream Analytics that writes to a database or the lake."
+ ],
+ [
+  "09-messaging-integration.drawio",
+  "9.5",
+  "IoT: IoT Hub, DPS, IoT Central",
+  "A",
+  "IoT Hub is bidirectional (device-to-cloud and cloud-to-device) with an identity and a device twin per device. Its endpoint is Event Hubs-compatible. DPS provisions devices without touching them; IoT Central is the ready-made SaaS."
+ ],
+ [
+  "09-messaging-integration.drawio",
+  "9.6",
+  "Real-time web, push and low-code",
+  "A",
+  "SignalR Service / Web PubSub keep WebSockets open at scale; Notification Hubs sends mobile push; Power Automate gives users low-code automation."
+ ],
+ [
+  "09-messaging-integration.drawio",
+  "9.7",
+  "Orchestration: which tool?",
+  "D",
+  "Several services glue things together. Match the tool to who builds it (end user, integrator, developer, data engineer)."
+ ],
+ [
+  "10-analytics.drawio",
+  "10.1",
+  "Analytics engines: which one?",
+  "D",
+  "Fabric is the unified SaaS platform; Synapse, Databricks, Data Explorer and HDInsight remain for specific needs."
+ ],
+ [
+  "10-analytics.drawio",
+  "10.2",
+  "Medallion data platform",
+  "A",
+  "Ingest raw data into Bronze, clean to Silver, model to Gold, then serve to BI and ML. Governance spans all layers."
+ ],
+ [
+  "10-analytics.drawio",
+  "10.3",
+  "Data Factory integration runtimes",
+  "D",
+  "Pick the runtime by where the data lives: Azure IR for cloud, self-hosted IR for on-prem or private networks, Azure-SSIS IR for SSIS packages."
+ ],
+ [
+  "10-analytics.drawio",
+  "10.4",
+  "Streaming: hot, warm and cold paths",
+  "A",
+  "Events arrive through Event Hubs; a hot path analyses in real time while a cold path lands data in the lake for batch."
+ ],
+ [
+  "10-analytics.drawio",
+  "10.5",
+  "Microsoft Purview",
+  "A",
+  "Purview scans sources, builds a data map and catalog, tracks lineage and applies sensitivity labels and policies across the estate."
+ ],
+ [
+  "10-analytics.drawio",
+  "10.6",
+  "Fabric concepts",
+  "A",
+  "One capacity powers every Fabric workload on OneLake; shortcuts reference external data without copying, and Direct Lake reads lake files from Power BI."
+ ],
+ [
+  "11-migration.drawio",
+  "11.1",
+  "Cloud Adoption Framework and the migration Rs",
+  "C",
+  "CAF is a methodology, not a service. Build the landing zone before moving workloads, then choose a migration strategy per workload."
+ ],
+ [
+  "11-migration.drawio",
+  "11.2",
+  "Azure Migrate: server migration",
+  "A",
+  "Azure Migrate discovers servers (VMware, Hyper-V, physical, other clouds), sizes them from real performance and replicates them continuously for a short cutover. AVS keeps vSphere unchanged; Resource Mover relocates between Azure regions."
+ ],
+ [
+  "11-migration.drawio",
+  "11.3",
+  "Database migration paths",
+  "A",
+  "Assess compatibility first (DMA), then migrate with DMS online (continuous replication, short cutover) or offline (full stop). Heterogeneous moves need a schema conversion step."
+ ],
+ [
+  "11-migration.drawio",
+  "11.4",
+  "Data transfer: online or offline?",
+  "D",
+  "Decide with arithmetic: size divided by bandwidth. 200 TB over 1 Gbps takes about 26 days. If that does not fit the window, go offline with Data Box."
+ ],
+ [
+  "12-continuity.drawio",
+  "12.1",
+  "The four DR strategies",
+  "D",
+  "Cost falls and recovery time grows from active-active down to backup and restore. Pick by RTO/RPO versus budget."
+ ],
+ [
+  "12-continuity.drawio",
+  "12.2",
+  "Azure Site Recovery",
+  "A",
+  "ASR replicates VMs continuously to a secondary region (or from on-prem) and orchestrates failover with recovery plans."
+ ],
+ [
+  "12-continuity.drawio",
+  "12.3",
+  "Azure Backup",
+  "A",
+  "Backup vaults and Recovery Services vaults protect VMs, SQL, files and blobs with policies; immutability and soft delete guard against ransomware."
+ ],
+ [
+  "12-continuity.drawio",
+  "12.4",
+  "Multi-region active-active",
+  "A",
+  "Front Door or Traffic Manager routes users to two regions; each has a full stack, and data uses multi-region writes or replication."
+ ],
+ [
+  "12-continuity.drawio",
+  "12.5",
+  "HA building blocks cheat sheet",
+  "D",
+  "Availability grows from single VM to zones to regions; map each level to its SLA."
+ ],
+ [
+  "12-continuity.drawio",
+  "12.6",
+  "Composite SLA math",
+  "D",
+  "Serial dependencies multiply (lower SLA); parallel redundant paths improve availability: 1 - (1-A)(1-B)."
+ ],
+ [
+  "13-security.drawio",
+  "13.1",
+  "Defender for Cloud: CSPM vs CWPP",
+  "A",
+  "CSPM assesses posture and recommends fixes (Secure Score); CWPP (Defender plans) detects threats on workloads."
+ ],
+ [
+  "13-security.drawio",
+  "13.2",
+  "Defender plan map",
+  "D",
+  "Each Defender plan protects a workload type."
+ ],
+ [
+  "13-security.drawio",
+  "13.3",
+  "Microsoft Sentinel",
+  "A",
+  "Cloud-native SIEM and SOAR on Log Analytics: connectors ingest data, analytics rules create incidents, playbooks (Logic Apps) automate response."
+ ],
+ [
+  "13-security.drawio",
+  "13.4",
+  "Defense in depth and compliance tools",
+  "D",
+  "Layered controls from identity to data; Defender for Cloud regulatory compliance and Policy track standards."
+ ],
+ [
+  "14-observability-ops.drawio",
+  "14.1",
+  "Azure Monitor data flow",
+  "A",
+  "Platform metrics and the Activity Log are automatic. Resource logs need diagnostic settings; guest OS logs need Azure Monitor Agent + a DCR; apps need Application Insights. Choose the destination by purpose."
+ ],
+ [
+  "14-observability-ops.drawio",
+  "14.2",
+  "Alerts and action groups",
+  "A",
+  "Pick the alert type by speed and logic, then route it to an action group. One action group can be reused by many rules."
+ ],
+ [
+  "14-observability-ops.drawio",
+  "14.3",
+  "Log Analytics workspace design",
+  "A",
+  "One central workspace by default (simplest and cheapest). Split by region for data sovereignty, by team or environment for admin or billing separation, and keep a dedicated one for Sentinel."
+ ],
+ [
+  "14-observability-ops.drawio",
+  "14.4",
+  "Application, container and VM insights",
+  "A",
+  "Application Insights is APM (traces, dependencies, exceptions) and is workspace-based: its data lives in Log Analytics. Container Insights and VM Insights cover AKS and VMs through Azure Monitor Agent."
+ ],
+ [
+  "14-observability-ops.drawio",
+  "14.5",
+  "Diagnostics: who did what, what's broken, where is it",
+  "D",
+  "Four tools answer four different questions."
+ ],
+ [
+  "14-observability-ops.drawio",
+  "14.6",
+  "Operations automation",
+  "D",
+  "Automate runbooks, patching and recommendations. Arc brings AMA and Update Manager to servers outside Azure."
+ ],
+ [
+  "15-devops.drawio",
+  "15.1",
+  "IaC decision",
+  "D",
+  "Bicep is the Azure-native choice, ARM is the underlying JSON, Terraform for multicloud."
+ ],
+ [
+  "15-devops.drawio",
+  "15.2",
+  "CI/CD with OIDC",
+  "A",
+  "Pipelines authenticate to Azure with workload identity federation (OIDC), so no secrets are stored."
+ ],
+ [
+  "15-devops.drawio",
+  "15.3",
+  "Deployment strategies",
+  "D",
+  "Blue/green swaps slots, canary shifts a percentage, rolling updates in batches."
+ ],
+ [
+  "15-devops.drawio",
+  "15.4",
+  "App Configuration and feature flags",
+  "A",
+  "Central configuration and feature flags with Key Vault references."
+ ],
+ [
+  "15-devops.drawio",
+  "15.5",
+  "Chaos Studio and Load Testing",
+  "A",
+  "Validate resilience with fault injection and performance with load tests before production."
+ ],
+ [
+  "16-finops.drawio",
+  "16.1",
+  "Cost governance pattern",
+  "A",
+  "Tag resources, set budgets with alerts, review Advisor recommendations, and enforce with Policy."
+ ],
+ [
+  "16-finops.drawio",
+  "16.2",
+  "Purchase options and per-service levers",
+  "D",
+  "Commit for steady load, use spot for interruptible work, reuse licences with Hybrid Benefit."
+ ],
+ [
+  "17-ai.drawio",
+  "17.1",
+  "AI service decision",
+  "D",
+  "Prebuilt AI services for common tasks, Azure OpenAI for generative, Azure ML for custom models."
+ ],
+ [
+  "17-ai.drawio",
+  "17.2",
+  "RAG architecture",
+  "A",
+  "Retrieve relevant chunks from a search index, then ground the model's answer in them."
+ ],
+ [
+  "17-ai.drawio",
+  "17.3",
+  "OpenAI deployment types",
+  "D",
+  "Standard is pay per token, Provisioned reserves throughput, Batch is cheap and asynchronous; regional or global variants."
+ ],
+ [
+  "17-ai.drawio",
+  "17.4",
+  "AI gateway with API Management",
+  "A",
+  "APIM fronts model endpoints for auth, token limits, load balancing and logging."
+ ],
+ [
+  "17-ai.drawio",
+  "17.5",
+  "Azure ML MLOps",
+  "A",
+  "Train in a workspace, register the model, deploy to managed online endpoints, monitor and retrain."
+ ],
+ [
+  "18-extras.drawio",
+  "18.1",
+  "Well-Architected pillars",
+  "D",
+  "Five pillars guide trade-offs."
+ ],
+ [
+  "18-extras.drawio",
+  "18.2",
+  "Cloud design patterns",
+  "D",
+  "Common patterns map to problems."
+ ],
+ [
+  "18-extras.drawio",
+  "18.3",
+  "Azure Local and hybrid",
+  "A",
+  "Run Azure services on-premises with Azure Local, managed through Arc."
+ ],
+ [
+  "18-extras.drawio",
+  "18.4",
+  "Regions, zones and sovereign clouds",
+  "D",
+  "Regions contain zones; paired regions help DR; sovereign clouds serve regulated needs."
+ ],
+ [
+  "18-extras.drawio",
+  "18.5",
+  "Static Web Apps",
+  "A",
+  "Static front end with integrated serverless API and global CDN."
+ ]
+]
